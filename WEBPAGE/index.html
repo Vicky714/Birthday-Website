@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Birthday Wishes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to right, #800000 50%, #ffffff 50%);
+            margin: 0;
+            padding: 0;
+            color: black;
+        }
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 1rem;
+            padding: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .media-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            transition: all 0.4s ease;
+            transform-origin: center;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .media-item:hover {
+            transform: scale(1.15) translateZ(50px);
+            z-index: 100;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+        }
+        .media-item img, .media-item video {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+        .love-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: rgba(0,0,0,0.3);
+            font-size: 24px;
+            z-index: 50;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .love-icon.active {
+            color: red;
+        }
+        .media-caption {
+            padding: 10px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #333;
+            background: #f4f4f4;
+        }
+        .surprise-btn {
+            background-color: #800000;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            margin-top: 20px;
+        }
+        .surprise-btn:hover {
+            background-color: #ffff00;
+            color: black;
+            transform: scale(1.05);
+        }
+        .surprise-message {
+            display: none;
+            background: rgba(255,255,255,0.9);
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            margin: 20px auto;
+            text-align: center;
+            color: #800000;
+            font-style: italic;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .filter-btn {
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #800000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .filter-btn:hover {
+            background-color: #600000;
+        }
+        .filter-btn.active {
+            background-color: #ffff00;
+            color: black;
+        }
+        .hidden-file-input {
+            display: none;
+        }
+        .upload-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #800000;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        .upload-icon:hover {
+            background-color: #ffff00;
+            color: black;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="text-center pt-8">
+        <h1 class="text-4xl font-bold mb-4">Happy Birthday Akhi 🫶💛!</h1>
+        <p class="text-lg">Discover your special birthday moments!</p>
+    </div>
+
+    <div class="text-center mb-4">
+        <button class="filter-btn" onclick="filterMedia('favorites')">Favorites</button>
+        <button class="filter-btn" onclick="filterMedia('images')">Images</button>
+        <button class="filter-btn" onclick="filterMedia('videos')">Videos</button>
+    </div>
+
+    <div class="image-grid" id="mediaContainer">
+        <!-- Media items will be dynamically populated here -->
+    </div>
+
+    <div class="text-center mt-8">
+        <button class="surprise-btn" onclick="showSurpriseMessage()">
+            Reveal Surprise Message
+        </button>
+        <div id="surpriseMessage" class="surprise-message"><p>
+            Hoiiii...Akhiiiii this is VkYyy!
+            Welcome 19'
+                    Wishing you whole heartedly...Happy Happier Happiest birthday akhiiiiiiii💛🫶!May your dreams in your dream book comes True😛,with Me!😁.
+            Have a blasting year ahead....enjoy a lot.🍻✨
+        </p>
+        </div>
+    </div>
+
+    <!-- Hidden File Input for Media Upload -->
+    <input type="file" id="mediaUpload" accept="image/*,video/*" multiple class="hidden-file-input">
+    
+    <!-- Subtle Upload Icon -->
+    <div class="upload-icon" onclick="document.getElementById('mediaUpload').click()">
+        <i class="fas fa-plus"></i>
+    </div>
+    
+    <script>
+        // Initial media data
+        const initialMediaData = [
+            { type: 'image', src: 'photos/family.jpg', alt: 'Friends Celebrating', caption: 'Family🫶', isFavorite: false },
+            { type: 'image', src: 'photos/pic0.jpg', alt: 'Birthday Cake', isFavorite: false },
+            { type: 'image', src: 'photos/pic20.jpg', alt: 'Friends Celebrating',  isFavorite: false },  
+            { type: 'video', src: 'videos/v12.mp4', alt: 'Birthday Celebration Video', caption: 'Renuuu🫶', isFavorite: false },          
+            { type: 'image', src: 'photos/pic3.jpg', alt: 'Birthday Cake',isFavorite: false },
+            { type: 'video', src: 'videos/v15.mp4', alt: 'Birthday Wishes Video', caption: 'Gowthamuu❤', isFavorite: false },
+            { type: 'image', src: 'photos/pic26.jpg', alt: 'Friends Celebrating', isFavorite: false },
+            { type: 'image', src: 'photos/pic11.jpg', alt: 'Birthday Cake',  isFavorite: false },
+            { type: 'video', src: 'videos/v13.mp4', alt: 'Birthday Video 1', caption: 'Bhaviii🫶', isFavorite: false },
+            { type: 'image', src: 'photos/pic5.jpg', alt: 'Friends Celebrating', isFavorite: false },
+            { type: 'image', src: 'photos/pic9.jpg', alt: 'Birthday Cake',  isFavorite: false },
+            { type: 'image', src: 'photos/pic33.jpg', alt: 'Friends Celebrating', isFavorite: false },
+            { type: 'video', src: 'videos/v1.mp4', alt: 'Birthday Video 1', caption: 'Danceuuuu🫶💛💃', isFavorite: false },
+            { type: 'image', src: 'photos/pic40.jpg', alt: 'Birthday Cake',  isFavorite: false },
+            { type: 'image', src: 'photos/pic41.jpg', alt: 'Friends Celebrating',isFavorite: false },
+            { type: 'image', src: 'photos/pic42.jpg', alt: 'Birthday Cake',  isFavorite: false },
+            { type: 'video', src: 'videos/v11.mp4', alt: 'Birthday Wishes Video', caption: 'Beauty😅😁', isFavorite: false },
+            { type: 'image', src: 'photos/pic43.jpg', alt: 'Friends Celebrating', isFavorite: false },
+            { type: 'image', src: 'photos/pic48.jpg', alt: 'Birthday Cake',  isFavorite: false },
+            { type: 'image', src: 'photos/pic49.jpg', alt: 'Friends Celebrating',  isFavorite: false },
+            { type: 'image', src: 'photos/picB.jpg', alt: 'Birthday Cake',caption: 'Friendsuuu🫶💛',  isFavorite: false },
+            { type: 'video', src: 'videos/v6.mp4', alt: 'Birthday Cake Video', isFavorite: false },
+            { type: 'image', src: 'photos/picC.jpg', alt: 'Friends Celebrating', isFavorite: false },
+            { type: 'image', src: 'photos/pic21.jpg', alt: 'Birthday Cake', isFavorite: false },
+            { type: 'video', src: 'videos/v8.mp4', alt: 'Birthday Celebration Video', isFavorite: false },
+            { type: 'image', src: 'photos/pic22.jpg', alt: 'Friends Celebrating', isFavorite: false },
+            { type: 'image', src: 'photos/pic23.jpg', alt: 'Birthday Cake',  isFavorite: false },
+            { type: 'video', src: 'videos/v5.mp4', alt: 'Birthday Video 1', isFavorite: false },
+            { type: 'video', src: 'videos/v2.mp4', alt: 'Birthday Cake Video', isFavorite: false },
+            { type: 'image', src: 'photos/pic24.jpg', alt: 'Friends Celebrating',isFavorite: false },
+            { type: 'image', src: 'photos/pic25.jpg', alt: 'Friends Celebrating',  isFavorite: false },
+            { type: 'video', src: 'videos/v7.mp4', alt: 'Birthday Wishes Video', isFavorite: false },
+            { type: 'image', src: 'photos/pic27.jpg', alt: 'Birthday Cake',isFavorite: false },
+            { type: 'image', src: 'photos/pic28.jpg', alt: 'Friends Celebrating', isFavorite: false },
+            { type: 'video', src: 'videos/v3.mp4', alt: 'Birthday Wishes Video', isFavorite: false },
+            { type: 'video', src: 'videos/v4.mp4', alt: 'Birthday Celebration Video',isFavorite: false },
+            { type: 'image', src: 'photos/pic29.jpg', alt: 'Birthday Cake',isFavorite: false },
+            { type: 'video', src: 'videos/v9.mp4', alt: 'Birthday Video 1', isFavorite: false },
+            { type: 'video', src: 'videos/v10.mp4', alt: 'Birthday Cake Video', isFavorite: false },
+            { type: 'image', src: 'photos/pic30.jpg', alt: 'Friends Celebrating', isFavorite: false },
+            { type: 'video', src: 'videos/v14.mp4', alt: 'Birthday Cake Video', isFavorite: false },
+          
+        ];
+
+        // Mutable media data that can be updated
+        let mediaData = [...initialMediaData];
+        let currentFilter = 'none';
+
+        // Render media items with individual favorite handling
+        function renderMediaItems(items) {
+            const container = document.getElementById('mediaContainer');
+            container.innerHTML = '';
+
+            items.forEach((item, index) => {
+                const mediaItem = document.createElement('div');
+                mediaItem.classList.add('media-item');
+
+                // Love icon with unique handling
+                const loveIcon = document.createElement('i');
+                loveIcon.classList.add('fas', 'fa-heart', 'love-icon');
+                
+                // Check if this item is a favorite
+                if (item.isFavorite) {
+                    loveIcon.classList.add('active');
+                }
+
+                loveIcon.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleFavorite(items[index]);
+                });
+
+                // Media element
+                let mediaElement;
+                if (item.type === 'image') {
+                    mediaElement = document.createElement('img');
+                    mediaElement.src = item.src;
+                    mediaElement.alt = item.alt;
+                } else {
+                    mediaElement = document.createElement('video');
+                    mediaElement.src = item.src;
+                    mediaElement.setAttribute('autoplay', '');
+                    mediaElement.setAttribute('muted', '');
+                    mediaElement.setAttribute('loop', '');
+                }
+
+                // Caption
+                const caption = document.createElement('div');
+                caption.classList.add('media-caption');
+                caption.textContent = item.caption || '';
+
+                mediaItem.appendChild(loveIcon);
+                mediaItem.appendChild(mediaElement);
+                mediaItem.appendChild(caption);
+                container.appendChild(mediaItem);
+            });
+        }
+
+        // Toggle favorite with improved logic
+        function toggleFavorite(item) {
+            // Toggle favorite state for this specific item
+            item.isFavorite = !item.isFavorite;
+            
+            // Re-apply current filter
+            filterMedia(currentFilter);
+        }
+
+        // Enhanced filtering mechanism
+        function filterMedia(filter) {
+            // Update active filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.toLowerCase() === filter) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Set current filter
+            currentFilter = filter;
+
+            // Filter logic
+            let filteredItems = [];
+            switch(filter) {
+                case 'favorites':
+                    filteredItems = mediaData.filter(item => item.isFavorite);
+                    break;
+                case 'images':
+                    filteredItems = mediaData.filter(item => item.type === 'image');
+                    break;
+                case 'videos':
+                    filteredItems = mediaData.filter(item => item.type === 'video');
+                    break;
+                default:
+                    filteredItems = mediaData;
+            }
+
+            // Move favorites to the top
+            const favorites = filteredItems.filter(item => item.isFavorite);
+            const nonFavorites = filteredItems.filter(item => !item.isFavorite);
+            
+            renderMediaItems([...favorites, ...nonFavorites]);
+        }
+
+        // File upload handler
+        document.getElementById('mediaUpload').addEventListener('change', function(e) {
+            const files = e.target.files;
+            for (let file of files) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const newMediaItem = {
+                        type: file.type.startsWith('image/') ? 'image' : 'video',
+                        src: event.target.result,
+                        alt: file.name,
+                        caption: file.name,
+                        isFavorite: false
+                    };
+                    
+                    // Add to media data
+                    mediaData.push(newMediaItem);
+                    
+                    // Re-render with current filter
+                    filterMedia(currentFilter);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Show surprise message
+        function showSurpriseMessage() {
+            const message = document.getElementById('surpriseMessage');
+            message.style.display = message.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Initial render
+        renderMediaItems(mediaData);
+    </script>
+</body>
+</html>

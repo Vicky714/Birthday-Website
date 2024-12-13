@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Birthday Website</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <style>
+        body {
+            background: linear-gradient(to right, yellow 50%, #A5F3FC 50%);
+        }
+        .draggable {
+            position: absolute;
+            cursor: grab;
+            transition: all 0.3s ease;
+            touch-action: none;
+            user-select: none;
+            border-radius: 300px;
+            object-fit: cover;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 300px;  /* Fixed width */
+            height: 300px; /* Fixed height */
+        }
+        .draggable:hover {
+            transform: scale(1.05) rotate(3deg);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.2);
+        }
+        .draggable:active {
+            cursor: grabbing;
+            transform: scale(0.95);
+        }
+        .hidden {
+            display: none;
+        }
+        .memories-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 50;
+            transition: all 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .memories-btn:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+        .typewriter h1 {
+            overflow: hidden;
+            border-right: .15em solid orange;
+            white-space: nowrap;
+            margin: 0 auto;
+            letter-spacing: .15em;
+            animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
+        }
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: orange; }
+        }
+        @keyframes roll {
+            0% { transform: rotate(0deg) translateY(0); }
+            50% { transform: rotate(360deg) translateY(-10px); }
+            100% { transform: rotate(720deg) translateY(0); }
+        }
+        .roll-animation {
+            animation: roll 2s ease-in-out forwards;
+        }
+        .hover-button {
+            transition: all 0.3s ease;
+            transform-origin: center;
+        }
+        .hover-button:hover {
+            transform: scale(1.1) rotate(5deg);
+            background-color: #48bb78;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+    <div class="relative w-full h-full flex items-center justify-center" id="app">
+        <div class="relative w-full h-full flex items-center justify-center" id="images-container">
+            <img alt="Placeholder image 3" class="draggable" src="photos/pic33.jpg" style="transform: rotate(30deg);"/>
+            <img alt="Placeholder image 4" class="draggable" src="photos/pic32.jpg" style="transform: rotate(-30deg);"/>
+            
+            
+            <img alt="Placeholder image 2" class="draggable" src="photos/pic24.jpg" style="transform: rotate(-15deg);"/>
+          
+            <img alt="Placeholder image 1" class="draggable" src="photos/pic28.jpg" style="transform: rotate(10deg);">
+            <img alt="Placeholder image 3" class="draggable" src="photos/pic27.jpg" style="transform: rotate(30deg);"/>
+            <img alt="Placeholder image 4" class="draggable" src="photos/pic26.jpg" style="transform: rotate(-30deg);"/>
+            <img alt="Placeholder image 4" class="draggable" src="photos/pic22.jpg" style="transform: rotate(-30deg);"/>
+           
+            <img alt="Placeholder image 1" class="draggable" src="photos/pic25.jpg" style="transform: rotate(10deg);"/>
+            
+            <img alt="Placeholder image 4" class="draggable" src="photos/pic21.jpg" style="transform: rotate(-30deg);"/>
+            
+            <img alt="Placeholder image 1" class="draggable" src="photos/pic20.jpg" style="transform: rotate(10deg);"/>
+            <img alt="Placeholder image 2" class="draggable" src="photos/pic11.jpg" style="transform: rotate(-15deg);"/>
+            <img alt="Placeholder image 1" class="draggable" src="photos/pic2.jpg" style="transform: rotate(10deg);"/>
+            
+            <img alt="Placeholder image 2" class="draggable" src="photos/pic00.jpg" style="transform: rotate(-15deg);"/>
+            <img alt="Placeholder image 3" class="draggable" src="photos/pic0.jpg" style="transform: rotate(30deg);"/>
+            <img alt="Placeholder image 3" class="draggable" src="photos/pic23.jpg" style="transform: rotate(30deg);"/>
+            <img alt="Placeholder image 2" class="draggable" src="photos/pic30.jpg" style="transform: rotate(-15deg);"/>
+            <img alt="Placeholder image 1" class="draggable" src="photos/pic31.jpg" style="transform: rotate(10deg);"/>
+            <img alt="Placeholder image 3" class="draggable" src="photos/pic29.jpg" style="transform: rotate(30deg);"/>
+            
+        </div>
+        <div class="absolute flex flex-col items-center justify-center hidden" id="cake-container">
+            <button class="bg-green-500 text-white px-4 py-2 rounded mt-4 hover:bg-green-700 hover-button" id="click-me-button">
+               Don't click me👀
+            </button>
+            <div class="flex space-x-4 mt-4">
+                <i class="fas fa-candle fa-2x text-yellow-500 cursor-pointer" onclick="extinguishCandle(this)"></i>
+                <i class="fas fa-candle fa-2x text-yellow-500 cursor-pointer" onclick="extinguishCandle(this)"></i>
+                <i class="fas fa-candle fa-2x text-yellow-500 cursor-pointer" onclick="extinguishCandle(this)"></i>
+            </div>
+        </div>
+        <div class="hidden typewriter" id="message-container">
+            <h1 class="text-4xl font-bold text-center roll-animation" id="rolling-text">Happiest Birthday Akhi 💛🫶</h1>
+        </div>
+        
+        <!-- Memories Button -->
+        <a href="index.html" class="bg-purple-500 text-white px-4 py-2 rounded memories-btn hover:bg-purple-600" id="memories-btn">
+            Memoriesuuu..🫶
+        </a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const images = document.querySelectorAll('.draggable');
+            const button = document.getElementById('click-me-button');
+            const memoriesBtn = document.getElementById('memories-btn');
+            let imagesMoved = 0;
+            let buttonClicks = 0;
+            const buttonTexts = [
+                `Don't click me👀`, 
+                'Areyy Vothaddu ana gaa🤥', 
+                'Vathadu anav vathutunav..nti sangathi🙄', 
+                'Oun ni Birthday kadha..😁'
+            ];
+
+            // Touch and Mouse Move Handlers
+            function addDragListeners(img) {
+                let startX, startY, isDragging = false;
+
+                function startDrag(e) {
+                    e.preventDefault();
+                    isDragging = true;
+                    
+                    // Get the initial touch or mouse coordinates
+                    if (e.type === 'touchstart') {
+                        startX = e.touches[0].clientX - img.offsetLeft;
+                        startY = e.touches[0].clientY - img.offsetTop;
+                    } else {
+                        startX = e.clientX - img.offsetLeft;
+                        startY = e.clientY - img.offsetTop;
+                    }
+                }
+
+                function moveDrag(e) {
+                    if (!isDragging) return;
+                    
+                    e.preventDefault();
+                    
+                    // Get current coordinates
+                    let currentX, currentY;
+                    if (e.type === 'touchmove') {
+                        currentX = e.touches[0].clientX - startX;
+                        currentY = e.touches[0].clientY - startY;
+                    } else {
+                        currentX = e.clientX - startX;
+                        currentY = e.clientY - startY;
+                    }
+
+                    // Update image position
+                    img.style.left = `${currentX}px`;
+                    img.style.top = `${currentY}px`;
+                }
+
+                function endDrag(e) {
+                    if (!isDragging) return;
+                    
+                    isDragging = false;
+                    imagesMoved++;
+                    
+                    if (imagesMoved === images.length) {
+                        document.getElementById('cake-container').classList.remove('hidden');
+                    }
+                }
+
+                // Mouse events
+                img.addEventListener('mousedown', startDrag);
+                document.addEventListener('mousemove', moveDrag);
+                document.addEventListener('mouseup', endDrag);
+
+                // Touch events
+                img.addEventListener('touchstart', startDrag, { passive: false });
+                document.addEventListener('touchmove', moveDrag, { passive: false });
+                document.addEventListener('touchend', endDrag, { passive: false });
+
+                // Prevent default drag behavior
+                img.ondragstart = () => false;
+            }
+
+            // Add drag listeners to all images
+            images.forEach(addDragListeners);
+
+            function extinguishCandle(candle) {
+                candle.classList.remove('fa-candle');
+                candle.classList.add('fa-smoke');
+                candle.style.color = 'gray';
+            }
+
+            button.addEventListener('click', function() {
+                // Update button text and position
+                buttonClicks++;
+                
+                if (buttonClicks < 4) {
+                    // Change button text
+                    this.textContent = buttonTexts[buttonClicks];
+
+                    // Randomize button position
+                    this.style.position = 'fixed';
+                    this.style.top = `${Math.random() * 80}vh`;
+                    this.style.left = `${Math.random() * 80}vw`;
+                } else {
+                    // Final click - show message
+                    const messageContainer = document.getElementById('message-container');
+                    const rollingText = document.getElementById('rolling-text');
+                    
+                    // Update message
+                    rollingText.textContent = `Happiest Birthday Akhiiiiiii..💛🫶`;
+                    
+                    this.classList.add('hidden');
+                    messageContainer.classList.remove('hidden');
+                    rollingText.classList.add('roll-animation');
+
+                    // Show memories button after rolling animation
+                    rollingText.addEventListener('animationend', () => {
+                        memoriesBtn.style.opacity = '1';
+                        memoriesBtn.style.pointerEvents = 'auto';
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
